@@ -24,7 +24,7 @@ void setup_ui(Application *app) {
     setup_project_view(app);
     setup_request_view(app);
 
-    app->content_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    app->content_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
     gtk_box_append(GTK_BOX(app->content_box), app->project_view);
     gtk_box_append(GTK_BOX(app->content_box), app->request_hpane);
 
@@ -39,6 +39,30 @@ void setup_request_view(Application *app) {
     app->request_hpane = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
     gtk_widget_set_hexpand(app->request_hpane, TRUE);
     app->request_frame = gtk_frame_new("Request");
+    GtkListStore *method_list = gtk_list_store_new(1, G_TYPE_STRING);
+    const gchar *methods[] = {"GET", "POST", "PUT", "PATCH", "DELETE"};
+    for (int i = 0; i < 5; i++) {
+        GtkTreeIter iter;
+        gtk_list_store_append(method_list, &iter);
+        gtk_list_store_set(method_list, &iter, 0, methods[i], -1);
+    }
+    app->method_dropdown = gtk_combo_box_new();
+    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(app->method_dropdown), renderer, TRUE);
+    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(app->method_dropdown), renderer, "text", 0, NULL);
+    gtk_combo_box_set_model(GTK_COMBO_BOX(app->method_dropdown), GTK_TREE_MODEL(method_list));
+    gtk_combo_box_set_active(GTK_COMBO_BOX(app->method_dropdown), 0);
+    g_object_unref(method_list);
+    app->url_text_box = gtk_entry_new();
+    GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
+    gtk_box_append(GTK_BOX(hbox), app->method_dropdown);
+    gtk_box_append(GTK_BOX(hbox), app->url_text_box);
+    gtk_entry_set_placeholder_text(GTK_ENTRY(app->url_text_box), "/api/v1/path");
+    gtk_widget_set_hexpand(app->url_text_box, TRUE);
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(vbox), hbox);
+    gtk_frame_set_child(GTK_FRAME(app->request_frame), vbox);
+
     app->response_frame = gtk_frame_new("Response");
     gtk_paned_set_start_child(GTK_PANED(app->request_hpane), app->request_frame);
     gtk_paned_set_end_child(GTK_PANED(app->request_hpane), app->response_frame);

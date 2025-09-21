@@ -26,7 +26,12 @@ typedef struct {
     GtkWidget *content_box;
     GtkWidget *project_view;
     GtkWidget *request_hpane;
+
     GtkWidget *request_frame;
+    GtkWidget *request_frame_box;
+    GtkWidget *url_text_box;
+    GtkWidget *method_dropdown;
+
     GtkWidget *response_frame;
 
 } Application;
