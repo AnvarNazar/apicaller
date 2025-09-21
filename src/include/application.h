@@ -16,15 +16,19 @@ typedef struct {
     uint64_t projects_size;
     char *application_name;
 
+    // UI
+    uint32_t width;
+    uint32_t height;
     GtkWindow *window;
     GMenu *menu;
     GtkWidget *menu_bar;
     GtkWidget *main_box;
+    GtkWidget *content_box;
+    GtkWidget *project_view;
+    GtkWidget *request_hpane;
+    GtkWidget *request_frame;
+    GtkWidget *response_frame;
 
-    GtkWidget *vbox;
-
-    uint32_t width;
-    uint32_t height;
 } Application;
 
 Application* application_init();
@@ -40,5 +44,9 @@ void create_menu(Application *app);
 void setup_actions(Application *app);
 
 void setup_ui(Application *app);
+
+void setup_project_view(Application *app);
+
+void setup_request_view(Application *app);
 
 #endif //APICALLER_APPLICATION_H

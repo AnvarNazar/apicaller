@@ -21,8 +21,49 @@ void setup_ui(Application *app) {
     app->main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(app->main_box), app->menu_bar);
 
+    setup_project_view(app);
+    setup_request_view(app);
+
+    app->content_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_append(GTK_BOX(app->content_box), app->project_view);
+    gtk_box_append(GTK_BOX(app->content_box), app->request_hpane);
+
+    gtk_widget_set_vexpand(app->content_box, TRUE);
+    gtk_box_append(GTK_BOX(app->main_box), app->content_box);
+
     gtk_window_set_child(GTK_WINDOW(app->window), app->main_box);
     gtk_window_present(GTK_WINDOW(app->window));
+}
+
+void setup_request_view(Application *app) {
+    app->request_hpane = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+    gtk_widget_set_hexpand(app->request_hpane, TRUE);
+    app->request_frame = gtk_frame_new("Request");
+    app->response_frame = gtk_frame_new("Response");
+    gtk_paned_set_start_child(GTK_PANED(app->request_hpane), app->request_frame);
+    gtk_paned_set_end_child(GTK_PANED(app->request_hpane), app->response_frame);
+}
+
+void setup_project_view(Application *app) {
+    app->project_view = gtk_tree_view_new();
+    GtkListStore *project_list_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_STRING);
+
+    for (guint i = 0; i < 8; i++) {
+        GtkTreeIter iter;
+        gtk_list_store_append(project_list_store, &iter);
+        gtk_list_store_set(project_list_store, &iter, 0, "GET", -1);
+        gtk_list_store_set(project_list_store, &iter, 1, "/api/v1/login", -1);
+    }
+
+    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(app->project_view),
+                                                -1, "Method", renderer, "text", 0, NULL);
+    renderer = gtk_cell_renderer_text_new();
+    gtk_tree_view_insert_column_with_attributes(
+        GTK_TREE_VIEW(app->project_view), -1, "Name", renderer, "text", 1, NULL);
+
+    gtk_tree_view_set_model(GTK_TREE_VIEW(app->project_view), GTK_TREE_MODEL(project_list_store));
+    g_object_unref(project_list_store);
 }
 
 void setup_actions(Application *app) {
@@ -81,7 +122,7 @@ void create_menu(Application *app) {
     g_menu_append(windows_menu, "Fullscreen", "app.fullscreen");
     g_menu_append(windows_menu, "Settings", "app.settings");
     g_menu_append(windows_menu, "Environments", "app.environments");
-    g_menu_append_submenu(app->menu,  "Windows", G_MENU_MODEL(windows_menu));
+    g_menu_append_submenu(app->menu, "Windows", G_MENU_MODEL(windows_menu));
 
     GMenu *plugins_menu = g_menu_new();
     g_menu_append(plugins_menu, "Plugins", "app.plugins");
