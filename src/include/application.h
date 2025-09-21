@@ -2,8 +2,8 @@
 // Created by anvar on 12/9/25.
 //
 
-#ifndef APITESTER_APPLICATION_H
-#define APITESTER_APPLICATION_H
+#ifndef APICALLER_APPLICATION_H
+#define APICALLER_APPLICATION_H
 
 #include <gtk/gtk.h>
 
@@ -11,6 +11,7 @@
 
 typedef struct {
     GtkApplication *gtk_app;
+    GActionMap *action_map;
     Project *projects;
     uint64_t projects_size;
     char *application_name;
@@ -36,4 +37,4 @@ void application_delete(Application *app);
 
 static void create_menu(Application *app);
 
-#endif //APITESTER_APPLICATION_H
+#endif //APICALLER_APPLICATION_H

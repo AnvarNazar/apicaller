@@ -4,31 +4,47 @@
 #include "include/application.h"
 #include "include/actions.h"
 
-void startup(GApplication *app) {
-    static const GActionEntry actions[] = {
-        {"projects.new_request", projects_new_request},
-        {"projects.open_project", projects_open_project},
-        {"projects.save_project", projects_save_project},
-        {"projects.save_as_project", projects_save_as_project},
-        {"projects.close", projects_close},
-        {"window.fullscreen", window_fullscreen},
-        {"window.settings", window_settings},
-        {"plugins.plugins", plugins_plugins},
-        {"plugins.install", plugins_install},
-        {"help.help", help_help},
-        {"help.about", help_about},
-    };
-    g_action_map_add_action_entries(G_ACTION_MAP(app),
-                                    actions,
-                                    G_N_ELEMENTS(actions),
-                                    app);
-}
-
 void activate(GtkApplication *gtk_app, gpointer userdata) {
     Application *app = userdata;
     app->window = (GtkWindow *) gtk_application_window_new(app->gtk_app);
     gtk_window_set_default_size(app->window, app->width, app->height);
     gtk_window_set_title(app->window, app->application_name);
+
+    GSimpleAction *projects_new_request_action = g_simple_action_new("new_request", NULL);
+    GSimpleAction *projects_open_project_action = g_simple_action_new("open_project", NULL);
+    GSimpleAction *projects_save_project_action = g_simple_action_new("save_project", NULL);
+    GSimpleAction *projects_save_as_project_action = g_simple_action_new("save_as_project", NULL);
+    GSimpleAction *projects_close_action = g_simple_action_new("close", NULL);
+    GSimpleAction *window_fullscreen_action = g_simple_action_new("fullscreen", NULL);
+    GSimpleAction *window_settings_action = g_simple_action_new("settings", NULL);
+    GSimpleAction *plugins_plugins_action = g_simple_action_new("plugins", NULL);
+    GSimpleAction *plugins_install_action = g_simple_action_new("plugins.install", NULL);
+    GSimpleAction *help_help_action = g_simple_action_new("help", NULL);
+    GSimpleAction *help_about_action = g_simple_action_new("help.about", NULL);
+
+    g_signal_connect(projects_new_request_action, "activate", G_CALLBACK(projects_new_request), NULL);
+    g_signal_connect(projects_open_project_action, "activate", G_CALLBACK(projects_open_project), NULL);
+    g_signal_connect(projects_save_project_action, "activate", G_CALLBACK(projects_save_project), NULL);
+    g_signal_connect(projects_save_as_project_action, "activate", G_CALLBACK(projects_save_as_project), NULL);
+    g_signal_connect(projects_close_action, "activate", G_CALLBACK(projects_close), NULL);
+    g_signal_connect(window_fullscreen_action, "activate", G_CALLBACK(window_fullscreen), NULL);
+    g_signal_connect(window_settings_action, "activate", G_CALLBACK(window_settings), NULL);
+    g_signal_connect(plugins_plugins_action, "activate", G_CALLBACK(plugins_plugins), NULL);
+    g_signal_connect(plugins_install_action, "activate", G_CALLBACK(plugins_install), NULL);
+    g_signal_connect(help_help_action, "activate", G_CALLBACK(help_help), NULL);
+    g_signal_connect(help_about_action, "activate", G_CALLBACK(help_about), NULL);
+
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_new_request_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_open_project_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_save_project_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_save_as_project_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_close_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_fullscreen_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_settings_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(plugins_plugins_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(plugins_install_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(help_help_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(help_about_action));
 
     create_menu(app);
     app->menu_bar = gtk_popover_menu_bar_new_from_model(G_MENU_MODEL(app->menu));
@@ -44,26 +60,26 @@ static void create_menu(Application *app) {
     app->menu = g_menu_new();
 
     GMenu *projects_menu = g_menu_new();
-    g_menu_append(projects_menu, "New Request", "projects.new_request");
-    g_menu_append(projects_menu, "Open Project", "projects.open_project");
-    g_menu_append(projects_menu, "Save Project", "projects.save_project");
-    g_menu_append(projects_menu, "Save As Project", "projects.save_as_project");
-    g_menu_append(projects_menu, "Close", "projects.close");
+    g_menu_append(projects_menu, "New Request", "app.new_request");
+    g_menu_append(projects_menu, "Open Project", "app.open_project");
+    g_menu_append(projects_menu, "Save Project", "app.save_project");
+    g_menu_append(projects_menu, "Save As Project", "app.save_as_project");
+    g_menu_append(projects_menu, "Close", "app.close");
     g_menu_append_submenu(app->menu, "Projects", G_MENU_MODEL(projects_menu));
 
     GMenu *windows_menu = g_menu_new();
-    g_menu_append(windows_menu, "Fullscreen", "window.fullscreen");
-    g_menu_append(windows_menu, "Settings", "window.settings");
+    g_menu_append(windows_menu, "Fullscreen", "app.fullscreen");
+    g_menu_append(windows_menu, "Settings", "app.settings");
     g_menu_append_submenu(app->menu,  "Windows", G_MENU_MODEL(windows_menu));
 
     GMenu *plugins_menu = g_menu_new();
-    g_menu_append(plugins_menu, "Plugins", "plugins.plugins");
-    g_menu_append(plugins_menu, "Install", "plugins.install");
+    g_menu_append(plugins_menu, "Plugins", "app.plugins");
+    g_menu_append(plugins_menu, "Install", "app.plugins.install");
     g_menu_append_submenu(app->menu, "Plugins", G_MENU_MODEL(plugins_menu));
 
     GMenu *help_menu = g_menu_new();
-    g_menu_append(help_menu, "Help", "help.help");
-    g_menu_append(help_menu, "About", "help.about");
+    g_menu_append(help_menu, "Help", "app.help");
+    g_menu_append(help_menu, "About", "app.help.about");
     g_menu_append_submenu(app->menu, "Help", G_MENU_MODEL(help_menu));
 }
 
@@ -71,32 +87,7 @@ Application *application_init() {
     Application *app = (Application *) malloc(sizeof(Application));
     app->application_name = "API Caller";
     app->gtk_app = gtk_application_new("com.anvarnazar.test", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect(app->gtk_app, "startup", G_CALLBACK(startup), NULL);
     g_signal_connect(app->gtk_app, "activate", G_CALLBACK(activate), app);
-
-    GSimpleAction *projects_new_request_action = g_simple_action_new("projects.new_request", NULL);
-    GSimpleAction *projects_open_project_action = g_simple_action_new("projects.open_project", NULL);
-    GSimpleAction *projects_save_project_action = g_simple_action_new("projects.save_project", NULL);
-    GSimpleAction *projects_save_as_project_action = g_simple_action_new("projects.save_as_project", NULL);
-    GSimpleAction *projects_close_action = g_simple_action_new("projects.close", NULL);
-    GSimpleAction *window_fullscreen_action = g_simple_action_new("window.fullscreen", NULL);
-    GSimpleAction *window_settings_action = g_simple_action_new("window.settings", NULL);
-    GSimpleAction *plugins_plugins_action = g_simple_action_new("plugins.plugins", NULL);
-    GSimpleAction *plugins_install_action = g_simple_action_new("plugins.install", NULL);
-    GSimpleAction *help_help_action = g_simple_action_new("help.help", NULL);
-    GSimpleAction *help_about_action = g_simple_action_new("help.about", NULL);
-
-    g_signal_connect(projects_new_request_action, "activate", G_CALLBACK(projects_new_request), NULL);
-    g_signal_connect(projects_open_project_action, "activate", G_CALLBACK(projects_open_project), app);
-    g_signal_connect(projects_save_project_action, "activate", G_CALLBACK(projects_save_project), app);
-    g_signal_connect(projects_save_as_project_action, "activate", G_CALLBACK(projects_save_as_project), app);
-    g_signal_connect(projects_close_action, "activate", G_CALLBACK(projects_close), app);
-    g_signal_connect(window_fullscreen_action, "activate", G_CALLBACK(window_fullscreen), app);
-    g_signal_connect(window_settings_action, "activate", G_CALLBACK(window_settings), app);
-    g_signal_connect(plugins_plugins_action, "activate", G_CALLBACK(plugins_plugins), app);
-    g_signal_connect(plugins_install_action, "activate", G_CALLBACK(plugins_install), app);
-    g_signal_connect(help_help_action, "activate", G_CALLBACK(help_help), app);
-    g_signal_connect(help_about_action, "activate", G_CALLBACK(help_about), app);
 
     app->projects = NULL;
     app->projects_size = 0;

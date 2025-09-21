@@ -4,7 +4,7 @@
 #include "include/actions.h"
 
 void projects_new_request(GSimpleAction *action, GVariant *parameter, gpointer userdata) {
-    g_print("New Project\n");
+    g_print("New Request\n");
     // TODO: implement
 }
 
