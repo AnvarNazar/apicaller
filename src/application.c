@@ -64,6 +64,16 @@ void setup_request_view(Application *app) {
     gtk_frame_set_child(GTK_FRAME(app->request_frame), vbox);
 
     app->response_frame = gtk_frame_new("Response");
+    app->response_text_box = GTK_SOURCE_VIEW(gtk_source_view_new());
+    app->response_buffer = GTK_SOURCE_BUFFER(gtk_text_view_get_buffer(GTK_TEXT_VIEW(app->response_text_box)));
+    GtkSourceLanguageManager *source_language_manager = gtk_source_language_manager_new();
+    gtk_source_buffer_set_language(GTK_SOURCE_BUFFER(app->response_buffer),
+                                   gtk_source_language_manager_get_language(source_language_manager, "json"));
+    gtk_source_view_set_show_line_marks(app->response_text_box, TRUE);
+    const char *json_content = "{\n\t\"token\": \"032984032408328\",\n\t\"expire\": \"39029432943\"\n}";
+    gtk_text_buffer_set_text(
+        GTK_TEXT_BUFFER(app->response_buffer), json_content, strlen(json_content));
+    gtk_frame_set_child(GTK_FRAME(app->response_frame), GTK_WIDGET(app->response_text_box));
     gtk_paned_set_start_child(GTK_PANED(app->request_hpane), app->request_frame);
     gtk_paned_set_end_child(GTK_PANED(app->request_hpane), app->response_frame);
 }

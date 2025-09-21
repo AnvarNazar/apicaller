@@ -6,6 +6,7 @@
 #define APICALLER_APPLICATION_H
 
 #include <gtk/gtk.h>
+#include <gtksourceview/gtksource.h>
 
 #include "project.h"
 
@@ -33,6 +34,8 @@ typedef struct {
     GtkWidget *method_dropdown;
 
     GtkWidget *response_frame;
+    GtkSourceBuffer *response_buffer;
+    GtkSourceView *response_text_box;
 
 } Application;
 
