@@ -12,6 +12,10 @@ void activate(GtkApplication *gtk_app, gpointer userdata) {
 
     setup_actions(app);
     create_menu(app);
+    setup_ui(app);
+}
+
+void setup_ui(Application *app) {
     app->menu_bar = gtk_popover_menu_bar_new_from_model(G_MENU_MODEL(app->menu));
 
     app->main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);

@@ -39,4 +39,6 @@ void create_menu(Application *app);
 
 void setup_actions(Application *app);
 
+void setup_ui(Application *app);
+
 #endif //APICALLER_APPLICATION_H
