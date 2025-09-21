@@ -38,6 +38,11 @@ void window_settings(GSimpleAction *action, GVariant *parameter, gpointer userda
     // TODO: implement
 }
 
+void window_environment(GSimpleAction *action, GVariant *parameter, gpointer userdata) {
+    g_print("Window environment\n");
+    // TODO: implement
+}
+
 void plugins_plugins(GSimpleAction *action, GVariant *parameter, gpointer userdata) {
     g_print("Plugins plugins\n");
     // TODO: implement

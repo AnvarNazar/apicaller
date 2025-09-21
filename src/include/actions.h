@@ -22,6 +22,8 @@ void window_fullscreen(GSimpleAction *action, GVariant *parameter, gpointer user
 
 void window_settings(GSimpleAction *action, GVariant *parameter, gpointer userdata);
 
+void window_environment(GSimpleAction *action, GVariant *parameter, gpointer userdata);
+
 void plugins_plugins(GSimpleAction *action, GVariant *parameter, gpointer userdata);
 
 void plugins_install(GSimpleAction *action, GVariant *parameter, gpointer userdata);

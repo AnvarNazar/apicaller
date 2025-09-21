@@ -17,6 +17,7 @@ void activate(GtkApplication *gtk_app, gpointer userdata) {
     GSimpleAction *projects_close_action = g_simple_action_new("close", NULL);
     GSimpleAction *window_fullscreen_action = g_simple_action_new("fullscreen", NULL);
     GSimpleAction *window_settings_action = g_simple_action_new("settings", NULL);
+    GSimpleAction *window_environment_action = g_simple_action_new("environments", NULL);
     GSimpleAction *plugins_plugins_action = g_simple_action_new("plugins", NULL);
     GSimpleAction *plugins_install_action = g_simple_action_new("plugins.install", NULL);
     GSimpleAction *help_help_action = g_simple_action_new("help", NULL);
@@ -29,6 +30,7 @@ void activate(GtkApplication *gtk_app, gpointer userdata) {
     g_signal_connect(projects_close_action, "activate", G_CALLBACK(projects_close), NULL);
     g_signal_connect(window_fullscreen_action, "activate", G_CALLBACK(window_fullscreen), NULL);
     g_signal_connect(window_settings_action, "activate", G_CALLBACK(window_settings), NULL);
+    g_signal_connect(window_environment_action, "activate", G_CALLBACK(window_environment), NULL);
     g_signal_connect(plugins_plugins_action, "activate", G_CALLBACK(plugins_plugins), NULL);
     g_signal_connect(plugins_install_action, "activate", G_CALLBACK(plugins_install), NULL);
     g_signal_connect(help_help_action, "activate", G_CALLBACK(help_help), NULL);
@@ -41,6 +43,7 @@ void activate(GtkApplication *gtk_app, gpointer userdata) {
     g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_close_action));
     g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_fullscreen_action));
     g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_settings_action));
+    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_environment_action));
     g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(plugins_plugins_action));
     g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(plugins_install_action));
     g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(help_help_action));
@@ -70,6 +73,7 @@ static void create_menu(Application *app) {
     GMenu *windows_menu = g_menu_new();
     g_menu_append(windows_menu, "Fullscreen", "app.fullscreen");
     g_menu_append(windows_menu, "Settings", "app.settings");
+    g_menu_append(windows_menu, "Environments", "app.environments");
     g_menu_append_submenu(app->menu,  "Windows", G_MENU_MODEL(windows_menu));
 
     GMenu *plugins_menu = g_menu_new();
