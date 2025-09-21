@@ -10,6 +10,18 @@ void activate(GtkApplication *gtk_app, gpointer userdata) {
     gtk_window_set_default_size(app->window, app->width, app->height);
     gtk_window_set_title(app->window, app->application_name);
 
+    setup_actions(app);
+    create_menu(app);
+    app->menu_bar = gtk_popover_menu_bar_new_from_model(G_MENU_MODEL(app->menu));
+
+    app->main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(app->main_box), app->menu_bar);
+
+    gtk_window_set_child(GTK_WINDOW(app->window), app->main_box);
+    gtk_window_present(GTK_WINDOW(app->window));
+}
+
+void setup_actions(Application *app) {
     GSimpleAction *projects_new_request_action = g_simple_action_new("new_request", NULL);
     GSimpleAction *projects_open_project_action = g_simple_action_new("open_project", NULL);
     GSimpleAction *projects_save_project_action = g_simple_action_new("save_project", NULL);
@@ -36,30 +48,21 @@ void activate(GtkApplication *gtk_app, gpointer userdata) {
     g_signal_connect(help_help_action, "activate", G_CALLBACK(help_help), NULL);
     g_signal_connect(help_about_action, "activate", G_CALLBACK(help_about), NULL);
 
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_new_request_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_open_project_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_save_project_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_save_as_project_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(projects_close_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_fullscreen_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_settings_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(window_environment_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(plugins_plugins_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(plugins_install_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(help_help_action));
-    g_action_map_add_action(G_ACTION_MAP(gtk_app), G_ACTION(help_about_action));
-
-    create_menu(app);
-    app->menu_bar = gtk_popover_menu_bar_new_from_model(G_MENU_MODEL(app->menu));
-
-    app->main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(app->main_box), app->menu_bar);
-
-    gtk_window_set_child(GTK_WINDOW(app->window), app->main_box);
-    gtk_window_present(GTK_WINDOW(app->window));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(projects_new_request_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(projects_open_project_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(projects_save_project_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(projects_save_as_project_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(projects_close_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(window_fullscreen_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(window_settings_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(window_environment_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(plugins_plugins_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(plugins_install_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(help_help_action));
+    g_action_map_add_action(G_ACTION_MAP(app->gtk_app), G_ACTION(help_about_action));
 }
 
-static void create_menu(Application *app) {
+void create_menu(Application *app) {
     app->menu = g_menu_new();
 
     GMenu *projects_menu = g_menu_new();

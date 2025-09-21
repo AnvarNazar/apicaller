@@ -35,6 +35,8 @@ void application_run(Application *app, int argc, char **argv);
 
 void application_delete(Application *app);
 
-static void create_menu(Application *app);
+void create_menu(Application *app);
+
+void setup_actions(Application *app);
 
 #endif //APICALLER_APPLICATION_H
